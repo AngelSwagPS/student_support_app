@@ -20,6 +20,7 @@ void checkForToken() async{
   var token = sharedPreferences.get('token');
   if(!(token == null)){
     hasToken =true;
+    //
   }
 }
 
