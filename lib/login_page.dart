@@ -12,6 +12,17 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
+
+bool hasToken = false;
+
+void checkForToken() async{
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  var token = sharedPreferences.get('token');
+  if(!(token == null)){
+    hasToken =true;
+  }
+}
+
 class LoginAlbum {
   final String username;
   final String token;
@@ -37,8 +48,9 @@ class LoginAlbum {
 }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
+   LoginPage({super.key}){
+     checkForToken();
+   }
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -58,14 +70,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<String> readResponse(HttpClientResponse response) async{
-    final completer = Completer<String>();
-    final contents = StringBuffer();
-    response.transform(utf8.decoder).listen((data) {
-      contents.write(data);
-    }, onDone: () => completer.complete(contents.toString()));
-    return completer.future;
-  }
 
   Future<int> check(String userEmail, String password,) async {
     try {
@@ -93,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
         Map<String, dynamic> valueMap = json.decode(reply);
         //To turn the matched values into objects
         LoginAlbum loginAlbum = LoginAlbum.fromJson(valueMap);
+
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setString('token', loginAlbum.token);
         print(loginAlbum.token);
@@ -106,33 +111,14 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<int> validateUser(String userEmail, String password,) async {
-
-      var response = await http.post(
-        Uri.parse('http://192.168.198.45:5125/api/User/Login'),
-        // headers: <String, String>{
-        //   'Content-Type': 'application/json; charset=UTF-8',
-        // },
-        body: {
-          "userEmail": "PS@yahoo",
-          "password": "nope"
-        },
-      );
-      if (response.statusCode == 200) {
-        // If the server did return a 201 CREATED response,
-        // then parse the JSON.
-        return response.statusCode;
-      } else {
-        // If the server did not return a 201 CREATED response,
-        // then throw an exception.
-        //throw Exception('Failed to create album.');
-        return response.statusCode;
-      }
-
-  }
 
   @override
   Widget build(BuildContext context) {
+    if(hasToken == true){
+      setState(() {
+        signUserIn(context);
+      });
+    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: color.AppColor.homePageBackground,
