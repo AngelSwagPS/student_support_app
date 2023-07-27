@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
 
-  Future<int> check(String userEmail, String password,) async {
+  Future<int> validateUser(String userEmail, String password,) async {
     try {
       HttpClient client = HttpClient();
       client.badCertificateCallback =
@@ -174,8 +174,9 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loadingcontroller.text = "Loading...";
                       });
-                        int futureCode = await check(userEmailcontroller.text, passwordcontroller.text);
+                        int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
                       setState(() {
+                        signUserIn(context);
                         loadingcontroller.text = "";
                       });
                     }
