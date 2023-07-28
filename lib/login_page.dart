@@ -13,17 +13,6 @@ import 'dart:convert';
 import 'dart:io';
 
 
-bool hasToken = false;
-
-void checkForToken() async{
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  var token = sharedPreferences.get('token');
-  if(!(token == null)){
-    hasToken =true;
-    //
-  }
-}
-
 class LoginAlbum {
   final String username;
   final String token;
@@ -49,13 +38,10 @@ class LoginAlbum {
 }
 
 class LoginPage extends StatefulWidget {
-   LoginPage({super.key}){
-    // checkForToken();
-   }
+   const LoginPage({super.key});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
-
 
 class _LoginPageState extends State<LoginPage> {
 
@@ -71,19 +57,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
   Future<int> validateUser(String userEmail, String password,) async {
     try {
       HttpClient client = HttpClient();
-      client.badCertificateCallback =
-      ((X509Certificate cert, String host, int port) => true);
+      client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
 
       String url = 'https://192.168.198.45:7125/api/User/Login';
 
-      Map map = {
-        "userEmail": "PS@yahoo",
-        "password": "nope"
-      };
+      Map map = {"userEmail": "PS@yahoo", "password": "nope"};
 
       HttpClientRequest request = await client.postUrl(Uri.parse(url));
       request.headers.set('content-type', 'application/json');
@@ -101,6 +82,7 @@ class _LoginPageState extends State<LoginPage> {
 
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setString('token', loginAlbum.token);
+        sharedPreferences.setString('username', loginAlbum.username);
         print(loginAlbum.token);
       }
       client.close();
@@ -115,11 +97,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(hasToken == true){
-      setState(() {
-        signUserIn(context);
-      });
-    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: color.AppColor.homePageBackground,
@@ -175,9 +152,9 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loadingcontroller.text = "Loading...";
                       });
-                       // int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
+                      int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
                       setState(() {
-                        signUserIn(context);
+                       // signUserIn(context);
                         loadingcontroller.text = "";
                       });
                     }
@@ -196,6 +173,20 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(
                   height: 30,
+                ),
+                MyButton(
+                    onTap: () async {
+                      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                      var taken= sharedPreferences.get('token');
+                      print(taken);
+                    }
+                ),
+                MyButton(
+                    onTap: () async {
+                      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                      sharedPreferences.remove('token');
+                      print("Token Deleted");
+                    }
                 )
               ],
             ),
@@ -204,7 +195,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-
-
 }
