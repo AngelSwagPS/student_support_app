@@ -49,7 +49,7 @@ class LoginAlbum {
 
 class LoginPage extends StatefulWidget {
    LoginPage({super.key}){
-     checkForToken();
+    // checkForToken();
    }
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loadingcontroller.text = "Loading...";
                       });
-                        int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
+                       // int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
                       setState(() {
                         signUserIn(context);
                         loadingcontroller.text = "";
