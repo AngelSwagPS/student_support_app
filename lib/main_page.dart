@@ -4,6 +4,50 @@ import 'package:flutter/material.dart';
 import 'colors.dart' as color;
 import 'profile_page.dart';
 
+class Class{
+    final String timeDuration;
+    final String nameCode;
+    final String location;
+    final double actualTime;
+
+    const Class({
+      required this.timeDuration,
+      required this.nameCode,
+      required this.location,
+      required this.actualTime,
+    });
+
+    factory Class.fromJson(Map<String, dynamic> field) {
+      return Class(
+        timeDuration: field['timeDuration'],
+        nameCode: field['nameCode'],
+        location: field['location'],
+        actualTime: field['actualTime'],
+      );
+    }
+}
+
+//Notifications in App == Messages on API
+class Notification{
+  final String title;
+  final int icon;
+  final String text;
+
+  const Notification({
+    required this.title,
+    required this.icon,
+    required this.text,
+  });
+
+  factory Notification.fromJson(Map<String, dynamic> field) {
+    return Notification(
+      title: field['title'],
+      icon: field['icon'],
+      text: field['text'],
+    );
+  }
+}
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -12,6 +56,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+ late Future<List<Notification>> futureNotifications;
+
+ @override
+ void initState() {
+   super.initState();
+
+   //futureNotifications = getNotifications();
+   }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -159,84 +211,23 @@ class _MainPageState extends State<MainPage> {
                           fontSize: 24,
                           color: color.AppColor.fontColor),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
                     Column(
-                      children: [
-                        //NOTIFICATIONS CARD WITH BORDER-RADIUS AND SHADOW
-                        Ink(
-                          decoration: BoxDecoration(
-                            color: color.AppColor.cardColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: InkWell(
-                            onTap: () {},
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 20),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.notifications_active,
-                                    color: Colors.blueAccent,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Info Systems (11:00 AM - 13:00 PM)",
-                                    style: TextStyle(
-                                        decoration: TextDecoration.none,
-                                        fontSize: 17,
-                                        fontFamily: 'SFProLight',
-                                        color: color.AppColor.fontColor),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                      children: [FutureBuilder<List<Notification>>(
+                        future: futureNotifications,
+                        builder: ((context, snapshot){
+                          if(snapshot.hasData){
 
-                        SizedBox(
-                          height: 10,
-                        ),
-                        //SECOND NOTIFICATION CARD
-                        Ink(
-                          decoration: BoxDecoration(
-                            color: color.AppColor.cardColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: InkWell(
-                            onTap: () {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 20),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.notifications_active,
-                                    color: Colors.blueAccent,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Graph Theory (13:30 PM - 15:30 PM)",
-                                    style: TextStyle(
-                                        decoration: TextDecoration.none,
-                                        fontSize: 17,
-                                        fontFamily: 'SFProLight',
-                                        color: color.AppColor.fontColor),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                          }else if(snapshot.hasError){
+                            return Text('Error: ${snapshot.error}');
+                          }
+
+                          return CircularProgressIndicator();
+                        }),
+
+                      )
                       ],
                     )
                   ],
@@ -248,4 +239,7 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
+
+  // Future<List<Notification>> getNotifications() { Future<List<Notification>> you;
+  //  return you;}
 }

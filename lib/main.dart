@@ -10,8 +10,6 @@ void main() {
   runApp(const MyApp());
 }
 
-
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -43,7 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-
     super.initState();
       hasToken().then((result){
         nextLocation = findNextLocation(result);

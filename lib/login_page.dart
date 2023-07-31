@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       HttpClient client = HttpClient();
       client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
 
-      String url = 'https://192.168.198.45:7125/api/User/Login';
+      String url = 'https://192.168.104.45:7125/api/User/Login';
 
       Map map = {"userEmail": "PS@yahoo", "password": "nope"};
 
@@ -152,9 +152,9 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loadingcontroller.text = "Loading...";
                       });
-                      int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
+                      //int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
                       setState(() {
-                       // signUserIn(context);
+                        signUserIn(context);
                         loadingcontroller.text = "";
                       });
                     }
