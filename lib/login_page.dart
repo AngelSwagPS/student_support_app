@@ -59,33 +59,31 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<int> validateUser(String userEmail, String password,) async {
     try {
-      HttpClient client = HttpClient();
-      client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
-
-      String url = 'https://192.168.104.45:7125/api/User/Login';
-
-      Map map = {"userEmail": "PS@yahoo", "password": "nope"};
-
-      HttpClientRequest request = await client.postUrl(Uri.parse(url));
-      request.headers.set('content-type', 'application/json');
-      request.add(utf8.encode(json.encode(map)));
-      HttpClientResponse response = await request.close();
-      String reply = await response.transform(utf8.decoder).join();
-
-      print(reply);
+      final ioc =  HttpClient();
+      ioc.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      final http =  IOClient(ioc);
+      final response = await http.post(
+        Uri.parse('https://192.168.210.45:7125/api/User/Login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          "userEmail": "PS@yahoo", "password": "nope"
+        }),
+      );
 
       if(response.statusCode==200){
         //To Match THe JsonLike "reply" values to each other
-        Map<String, dynamic> valueMap = json.decode(reply);
         //To turn the matched values into objects
-        LoginAlbum loginAlbum = LoginAlbum.fromJson(valueMap);
+        LoginAlbum loginAlbum = LoginAlbum.fromJson(json.decode(response.body));
 
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setString('token', loginAlbum.token);
         sharedPreferences.setString('username', loginAlbum.username);
         print(loginAlbum.token);
       }
-      client.close();
+
       return response.statusCode;
 
     }on SocketException{
@@ -152,11 +150,27 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loadingcontroller.text = "Loading...";
                       });
-                      //int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
-                      setState(() {
-                        signUserIn(context);
-                        loadingcontroller.text = "";
-                      });
+                      signUserIn(context);
+                     // int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
+                      // setState(() {
+                      //   if (futureCode == 200) {
+                      //     //If User is Found
+                      //     setState(() {
+                      //       signUserIn(context);
+                      //       loadingcontroller.text = "";
+                      //     });
+                      //   }else if(futureCode==400){
+                      //     //If User is not found
+                      //     setState(() {
+                      //       loadingcontroller.text="Wrong Email or Password";
+                      //     });
+                      //   }else {
+                      //     //If there was a network problem
+                      //     setState(() {
+                      //       loadingcontroller.text="Could Not Connect to Server";
+                      //     });
+                      //   }
+                      // });
                     }
                 ),
                 TextField(
@@ -174,20 +188,20 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 30,
                 ),
-                MyButton(
-                    onTap: () async {
-                      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                      var taken= sharedPreferences.get('token');
-                      print(taken);
-                    }
-                ),
-                MyButton(
-                    onTap: () async {
-                      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                      sharedPreferences.remove('token');
-                      print("Token Deleted");
-                    }
-                )
+                // MyButton(
+                //     onTap: () async {
+                //       SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                //       var taken= sharedPreferences.get('token');
+                //       print(taken);
+                //     }
+                // ),
+                // MyButton(
+                //     onTap: () async {
+                //       SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                //       sharedPreferences.remove('token');
+                //       print("Token Deleted");
+                //     }
+                // )
               ],
             ),
           ),

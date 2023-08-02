@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_support_app/login_page.dart';
 import 'colors.dart' as color;
+import 'components/mybutton.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -154,6 +156,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: color.AppColor.fontColor,
                             ),
                           ),
+                          MyButton(
+                              onTap: () async {
+                                SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                                sharedPreferences.remove('token');
+                                print("Token Deleted");
+                              }
+                          )
                         ],
                       ),
                     ),

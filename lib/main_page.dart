@@ -1,6 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/io_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'colors.dart' as color;
 import 'profile_page.dart';
 
@@ -45,6 +50,7 @@ class Notification{
       icon: field['icon'],
       text: field['text'],
     );
+
   }
 }
 
@@ -56,14 +62,16 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
- late Future<List<Notification>> futureNotifications;
+  late Future<List<Notification>> futureNotifications;
 
  @override
- void initState() {
+ void initState()  {
    super.initState();
 
-   //futureNotifications = getNotifications();
-   }
+   futureNotifications = getNotifications();
+
+ }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -215,20 +223,46 @@ class _MainPageState extends State<MainPage> {
                     //   height: 10,
                     // ),
                     Column(
-                      children: [FutureBuilder<List<Notification>>(
-                        future: futureNotifications,
-                        builder: ((context, snapshot){
-                          if(snapshot.hasData){
+                      children: [
+                        SizedBox(
+                             height: 350,
+                            child:
+                            FutureBuilder<List<Notification>>(
+                            future: futureNotifications,
+                            builder: ((context, snapshot){
+                              if(snapshot.hasData){
+                                return ListView.separated(
+                                    itemBuilder: (context,index){
+                                      Notification? notification = snapshot.data?[index];
 
-                          }else if(snapshot.hasError){
-                            return Text('Error: ${snapshot.error}');
-                          }
+                                      return ListTile(
+                                        tileColor: color.AppColor.cardColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        leading: getIcon(notification!.icon),
+                                        title: Text(notification.text,
+                                          style: TextStyle(
+                                            decoration: TextDecoration.none,
+                                            fontSize: 17,
+                                            fontFamily: 'SFProLight',
+                                            color: color.AppColor.fontColor),),
+                                      );
+                                    },
+                                    separatorBuilder: ((context, index){
+                                      return  Divider(color: color.AppColor.cardColor);
+                                    }),
+                                    itemCount: snapshot.data!.length);
+                              }else if(snapshot.hasError){
+                                return Text('Error: ${snapshot.error}');
+                              }
 
-                          return CircularProgressIndicator();
-                        }),
+                              return CircularProgressIndicator();
+                            }),
 
-                      )
-                      ],
+                          )
+                        )
+                       ],
                     )
                   ],
                 ),
@@ -242,4 +276,54 @@ class _MainPageState extends State<MainPage> {
 
   // Future<List<Notification>> getNotifications() { Future<List<Notification>> you;
   //  return you;}
+
+  Icon getIcon(int icon){
+     if(icon ==0){
+       return Icon(Icons.now_widgets, color: Colors.blueAccent,);
+     }else if(icon ==1){
+       return Icon(Icons.not_interested, color: Colors.red,);
+     }else if(icon ==2){
+       return Icon(Icons.notifications_active, color: Colors.yellow,);
+     }else{
+       return Icon(Icons.not_accessible, color: Colors.deepPurple,);
+     }
+  }
+
+  Future<List<Notification>> getNotifications() async {
+
+        String? token = await getToken();
+
+        final ioc =  HttpClient();
+        ioc.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        final http =  IOClient(ioc);
+        final response = await http.get(
+          Uri.parse('https://192.168.210.45:7125/api/User/$token'));
+
+        if(response.statusCode == 200){
+          final data = jsonDecode(response.body);
+
+          final List<Notification> list = [];
+
+          for(var i =0 ; i < data.length; i++){
+              final entry = data[i];
+              list.add(Notification.fromJson(entry));
+          }
+          print("Got the stuff");
+          return list;
+        }else{
+          throw Exception("Http failed");
+        }
+
+  }
+
+  Future<String?> getToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token =  sharedPreferences.getString('token');
+    print(token);
+    print("Past");
+    return token;
+  }
+
+
 }
