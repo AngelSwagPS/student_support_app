@@ -21,11 +21,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        // When navigating to the "/" route, build the FirstScreen widget.
-        // When navigating to the "/second" route, build the SecondScreen widget.
-        '/profile': (context) => const ProfilePage(),
-      },
       debugShowCheckedModeBanner: false,
       home: Scaffold(
           bottomNavigationBar: NavigationBar(

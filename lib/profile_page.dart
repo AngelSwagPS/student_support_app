@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:student_support_app/login_page.dart';
+import 'package:student_support_app/main_page.dart';
 import 'colors.dart' as color;
 import 'components/mybutton.dart';
 

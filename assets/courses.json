@@ -1,0 +1,68 @@
+{
+    "days": {
+      "monday": [
+        {
+          "courseCode": "CS50 - Introduction to ML ",
+          "venue": "LT-15",
+          "time": "9:30 AM",
+          "gradient":"[Color(0xFFFF0000), Color(0xFFFFA500)]"
+
+        },
+        {
+          "courseCode": "ENG101 - Communication Skills",
+          "venue": "Rm-101",
+          "time": "11:00 AM",
+          "gradient":"[Color(0xFF73C8A9), Color(0xFF373B44)]"
+        }
+      ],
+      "tuesday": [
+        {
+          "courseCode": "MATH202",
+          "venue": "Rm-203",
+          "time": "10:00 AM"
+        },
+        {
+          "courseCode": "PHY301",
+          "venue": "LT-10",
+          "time": "1:30 PM"
+        }
+      ],
+      "wednesday": [
+        {
+          "courseCode": "BIO105",
+          "venue": "Rm-302",
+          "time": "8:45 AM"
+        },
+        {
+          "courseCode": "HIS201",
+          "venue": "Rm-105",
+          "time": "11:30 AM"
+        }
+      ],
+      "thursday": [
+        {
+          "courseCode": "CHEM401",
+          "venue": "LT-7",
+          "time": "9:00 AM"
+        },
+        {
+          "courseCode": "PSY101",
+          "venue": "Rm-202",
+          "time": "2:00 PM"
+        }
+      ],
+      "friday": [
+        {
+          "courseCode": "CS150",
+          "venue": "LT-20",
+          "time": "10:45 AM"
+        },
+        {
+          "courseCode": "ART102",
+          "venue": "Rm-401",
+          "time": "12:15 PM"
+        }
+      ]
+    }
+  }
+  

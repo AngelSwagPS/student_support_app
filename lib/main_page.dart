@@ -1,39 +1,36 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace, avoid_print
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/io_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 import 'colors.dart' as color;
-import 'profile_page.dart';
 
-class Class{
-    final String timeDuration;
-    final String nameCode;
-    final String location;
-    final double actualTime;
+class Class {
+  final String timeDuration;
+  final String nameCode;
+  final String location;
+  final double actualTime;
 
-    const Class({
-      required this.timeDuration,
-      required this.nameCode,
-      required this.location,
-      required this.actualTime,
-    });
+  const Class({
+    required this.timeDuration,
+    required this.nameCode,
+    required this.location,
+    required this.actualTime,
+  });
 
-    factory Class.fromJson(Map<String, dynamic> field) {
-      return Class(
-        timeDuration: field['timeDuration'],
-        nameCode: field['nameCode'],
-        location: field['location'],
-        actualTime: field['actualTime'],
-      );
-    }
+  factory Class.fromJson(Map<String, dynamic> field) {
+    return Class(
+      timeDuration: field['timeDuration'],
+      nameCode: field['nameCode'],
+      location: field['location'],
+      actualTime: field['actualTime'],
+    );
+  }
 }
 
 //Notifications in App == Messages on API
-class Notification{
+class Notification {
   final String title;
   final int icon;
   final String text;
@@ -50,7 +47,6 @@ class Notification{
       icon: field['icon'],
       text: field['text'],
     );
-
   }
 }
 
@@ -62,25 +58,125 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  List _days = [];
+  late List<dynamic> mondayClasses = [];
+
+  Future<void> readJson() async {
+    try {
+      final String response =
+          await rootBundle.loadString('assets/courses.json');
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data.containsKey("days")) {
+        final Map<String, dynamic> daysData = data["days"];
+
+        // Print the entire daysData map to the console
+
+        mondayClasses = daysData['monday'];
+        print(' Monday classes: $mondayClasses');
+
+        // Print the number of items in the daysData map
+        print('Number of items: ${daysData.length}');
+      } else {
+        print("No 'days' key found in JSON data.");
+      }
+    } catch (e) {
+      print('Error reading JSON: $e');
+    }
+  }
+
   late Future<List<Notification>> futureNotifications;
 
- @override
- void initState()  {
-   super.initState();
+  List<Message> messages = [];
 
-   futureNotifications = getNotifications();
+  // Function to add a new message to the list
+  void _addMessage(String text) {
+    setState(() {
+      messages.insert(0, Message(text: text, timestamp: DateTime.now()));
+    });
+  }
 
- }
+  // Function to remove expired messages older than 12 hours
+  void _removeExpiredMessages() {
+    final currentTime = DateTime.now();
+    setState(() {
+      messages.removeWhere((message) => message.timestamp
+          .isBefore(currentTime.subtract(Duration(hours: 12))));
+    });
+  }
+
+  void _showInputDialog(BuildContext context) {
+    String newMessage = "";
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          actionsPadding: EdgeInsets.all(10),
+          backgroundColor: color.AppColor.cardColor,
+          title: Text(
+            "Add a Message",
+            style: TextStyle(
+                color: color.AppColor.fontColor,
+                fontFamily: 'SFProRegular',
+                fontWeight: FontWeight.w300,
+                fontSize: 18),
+          ),
+          content: TextField(
+            onChanged: (value) {
+              newMessage = value;
+            },
+          ),
+          actions: [
+            ElevatedButton(
+              child: Text(
+                "Cancel",
+                style: TextStyle(
+                  fontFamily: 'SFProRegular',
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text(
+                "OK",
+                style: TextStyle(
+                  fontFamily: 'SFProRegular',
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              onPressed: () {
+                _addMessage(newMessage);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to display time in hours ago format
+  String _getTimeAgo(DateTime time) {
+    final hoursAgo = DateTime.now().difference(time).inHours;
+    return hoursAgo == 1 ? "$hoursAgo hr ago" : "$hoursAgo hrs ago";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    readJson();
+
+    //futureNotifications = getNotifications();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      routes: {
-        // When navigating to the "/" route, build the FirstScreen widget.
-        // When navigating to the "/second" route, build the SecondScreen widget.
-        '/profile': (context) => const ProfilePage(),
-      },
       home: Container(
         padding:
             const EdgeInsets.only(top: 50, left: 15, right: 15, bottom: 40),
@@ -98,7 +194,8 @@ class _MainPageState extends State<MainPage> {
                         style: TextStyle(
                             decoration: TextDecoration.none,
                             fontFamily: 'SFProLight',
-                            fontSize: 20,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 19,
                             color: color.AppColor.fontColor),
                       ),
                       Row(
@@ -109,7 +206,7 @@ class _MainPageState extends State<MainPage> {
                                 decoration: TextDecoration.none,
                                 fontFamily: 'SFProRegular',
                                 fontSize: 25,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                                 color: color.AppColor.fontColor),
                           ),
                         ],
@@ -118,9 +215,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                   Expanded(child: Container()),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/profile');
-                    },
+                    onTap: () {},
                     child: Container(
                       width: 59,
                       height: 62,
@@ -146,61 +241,71 @@ class _MainPageState extends State<MainPage> {
               ),
               //NEXT CLASS DISPLAYED HERE
               Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Stack(
-                      fit: StackFit.passthrough,
-                      children: [
-                        Transform.scale(
-                          scale: 1.05,
-                          child: Image.asset(
-                            'assets/images/morningart.jpg',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Positioned(
-                            bottom: 0,
-                            child: Container(
-                              padding: EdgeInsets.all(10),
-                              width: MediaQuery.of(context).size.width,
-                              color: Colors.black.withOpacity(0.5),
+                child: SizedBox(
+                  height: 250,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: mondayClasses.length,
+                      itemBuilder: ((context, index) {
+                        final dynamic classData = mondayClasses[index];
+                        print('This is the class data: $classData');
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Container(
+                            height: 245,
+                            width: 400,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: LinearGradient(
+                                colors: [Colors.red, Colors.orange],
+                              ),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 160, left: 15),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Next class (11:00 AM - 13:00 PM)",
+                                    mondayClasses[index]['courseCode'],
                                     style: TextStyle(
                                         decoration: TextDecoration.none,
-                                        fontFamily: 'SFProRegular',
-                                        color: Colors.white,
-                                        fontSize: 20),
+                                        fontFamily: 'Martian',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: color.AppColor.fontColor),
+                                  ),
+                                  SizedBox(
+                                    height: 3,
                                   ),
                                   Text(
-                                    "CSM 456 - Info Tech",
+                                    mondayClasses[index]['venue'],
                                     style: TextStyle(
                                         decoration: TextDecoration.none,
-                                        fontFamily: 'SFProRegular',
-                                        color: Colors.white,
-                                        fontSize: 20),
+                                        fontFamily: 'Martian',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: color.AppColor.fontColor),
+                                  ),
+                                  SizedBox(
+                                    height: 3,
                                   ),
                                   Text(
-                                    "FF5",
+                                    mondayClasses[index]['time'],
                                     style: TextStyle(
                                         decoration: TextDecoration.none,
-                                        fontFamily: 'SFProRegular',
-                                        color: Colors.white,
-                                        fontSize: 20),
+                                        fontFamily: 'Martian',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        color: color.AppColor.fontColor),
                                   )
                                 ],
                               ),
-                            ))
-                      ],
-                    )),
+                            ),
+                          ),
+                        );
+                      })),
+                ),
               ),
               SizedBox(
                 height: 30,
@@ -211,59 +316,85 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Notifications",
-                      style: TextStyle(
-                          decoration: TextDecoration.none,
-                          fontFamily: 'SFProRegular',
-                          fontSize: 24,
-                          color: color.AppColor.fontColor),
+                    Row(
+                      children: [
+                        Text(
+                          "Notifications",
+                          style: TextStyle(
+                              decoration: TextDecoration.none,
+                              fontFamily: 'SFProRegular',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 24,
+                              color: color.AppColor.fontColor),
+                        ),
+                        Expanded(child: Container()),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color?>(
+                                color.AppColor.cardColor),
+                          ),
+                          onPressed: () {
+                            _showInputDialog(context);
+                          },
+                          child: Icon(
+                            Icons.add,
+                          ),
+                        )
+                      ],
                     ),
                     // SizedBox(
                     //   height: 10,
                     // ),
-                    Column(
-                      children: [
-                        SizedBox(
-                             height: 350,
-                            child:
-                            FutureBuilder<List<Notification>>(
-                            future: futureNotifications,
-                            builder: ((context, snapshot){
-                              if(snapshot.hasData){
-                                return ListView.separated(
-                                    itemBuilder: (context,index){
-                                      Notification? notification = snapshot.data?[index];
-
-                                      return ListTile(
-                                        tileColor: color.AppColor.cardColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        leading: getIcon(notification!.icon),
-                                        title: Text(notification.text,
-                                          style: TextStyle(
-                                            decoration: TextDecoration.none,
-                                            fontSize: 17,
-                                            fontFamily: 'SFProLight',
-                                            color: color.AppColor.fontColor),),
-                                      );
-                                    },
-                                    separatorBuilder: ((context, index){
-                                      return  Divider(color: color.AppColor.cardColor);
-                                    }),
-                                    itemCount: snapshot.data!.length);
-                              }else if(snapshot.hasError){
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: /* Column(
+                        children: [
+                          /* FutureBuilder<List<Notification>>(
+                            //future: futureNotifications,
+                            builder: ((context, snapshot) {
+                              if (snapshot.hasData) {
+                              } else if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
                               }
 
                               return CircularProgressIndicator();
                             }),
-
-                          )
-                        )
-                       ],
-                    )
+                          ) */
+                        ],
+                      ), */
+                          Column(
+                        children: messages.map((message) {
+                          return Card(
+                            color: color.AppColor.cardColor,
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.notifications_active_rounded,
+                                size: 30,
+                                color: Colors.blueAccent,
+                              ),
+                              title: Text(
+                                message.text,
+                                style: TextStyle(
+                                    color: color.AppColor.fontColor,
+                                    fontFamily: 'SFProRegular'),
+                              ),
+                              subtitle: Text(
+                                _getTimeAgo(message.timestamp),
+                                style: TextStyle(
+                                    color: color.AppColor.supportingText,
+                                    fontFamily: 'SFProRegular',
+                                    fontSize: 12),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    /* ElevatedButton(
+                        onPressed: () {
+                          print('Monday classes: $mondayClasses');
+                        },
+                        child: Text('Load data')) */
                   ],
                 ),
               )
@@ -276,54 +407,11 @@ class _MainPageState extends State<MainPage> {
 
   // Future<List<Notification>> getNotifications() { Future<List<Notification>> you;
   //  return you;}
+}
 
-  Icon getIcon(int icon){
-     if(icon ==0){
-       return Icon(Icons.now_widgets, color: Colors.blueAccent,);
-     }else if(icon ==1){
-       return Icon(Icons.not_interested, color: Colors.red,);
-     }else if(icon ==2){
-       return Icon(Icons.notifications_active, color: Colors.yellow,);
-     }else{
-       return Icon(Icons.not_accessible, color: Colors.deepPurple,);
-     }
-  }
+class Message {
+  String text;
+  DateTime timestamp;
 
-  Future<List<Notification>> getNotifications() async {
-
-        String? token = await getToken();
-
-        final ioc =  HttpClient();
-        ioc.badCertificateCallback =
-            (X509Certificate cert, String host, int port) => true;
-        final http =  IOClient(ioc);
-        final response = await http.get(
-          Uri.parse('https://192.168.210.45:7125/api/User/$token'));
-
-        if(response.statusCode == 200){
-          final data = jsonDecode(response.body);
-
-          final List<Notification> list = [];
-
-          for(var i =0 ; i < data.length; i++){
-              final entry = data[i];
-              list.add(Notification.fromJson(entry));
-          }
-          print("Got the stuff");
-          return list;
-        }else{
-          throw Exception("Http failed");
-        }
-
-  }
-
-  Future<String?> getToken() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String? token =  sharedPreferences.getString('token');
-    print(token);
-    print("Past");
-    return token;
-  }
-
-
+  Message({required this.text, required this.timestamp});
 }

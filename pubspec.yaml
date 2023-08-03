@@ -73,6 +73,8 @@ flutter:
     - assets/images/chat_logo.png
     - assets/images/person.png
     - assets/images/openai_logo.jpg
+    - assets/courses.json
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -113,21 +115,9 @@ flutter:
       fonts:
         - asset: assets/fonts/Inter-Black.ttf
           weight: 900
-    - family: Archivo
+    - family: Martian
       fonts:
-        - asset: assets/fonts/Archivo_Condensed-Black.ttf
-    - family: ZillaSlab
-      fonts:
-        - asset: assets/fonts/ZillaSlab-Regular.ttf
-
-    - family: ZillaSlabLight
-      fonts:
-        - asset: assets/fonts/ZillaSlab-Light.ttf
-
-          #       - asset: fonts/TrajanPro_Bold.ttf
-          weight: 400
+        - asset: assets/fonts/MartianMono.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-
