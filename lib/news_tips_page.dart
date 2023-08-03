@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_toggle_tab/flutter_toggle_tab.dart'; // Import the package
 import 'package:student_support_app/tabs/news_tab.dart';
+import 'package:student_support_app/tabs/tips_tab.dart';
 import 'colors.dart' as color;
 
 class NewsTipsPage extends StatefulWidget {
@@ -64,13 +65,7 @@ class _NewsTipsPageState extends State<NewsTipsPage> {
                   // NEWS PAGE
                   NewsTab(),
                   // TIPS PAGE
-                  Container(
-                    child: Column(
-                      children: [
-                        Text('Welcome to the tips page.'),
-                      ],
-                    ),
-                  ),
+                  TipsTab()
                 ],
               ),
             ),

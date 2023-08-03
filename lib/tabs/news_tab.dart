@@ -44,7 +44,7 @@ class _NewsTabState extends State<NewsTab> {
           SizedBox(
             height: 10,
           ),
-          //SECOND ARTICLE
+          //THIRD ARTICLE
           ArticleCard(
               title: "Unfortunate news hits KNUST campus",
               subtitle:
