@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_unnecessary_containers, sized_box_for_whitespace, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:student_support_app/aichatpage.dart';
 import 'package:student_support_app/main_page.dart';
 import 'package:student_support_app/profile_page.dart';
 import 'books_page.dart';
+import 'class.dart';
 import 'colors.dart' as color;
 import 'news_tips_page.dart';
 
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             //SECOND WIDGET & PAGE
             BooksPage(),
             NewsTipsPage(),
-            ChatPage(),
+            AIChatPage(),
             ProfilePage(),
           ][currentPageIndex]),
     );

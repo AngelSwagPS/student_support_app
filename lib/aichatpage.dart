@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
+
   @override
   _ChatPageState createState() => _ChatPageState();
 }
@@ -29,9 +31,9 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<String> getChatGPTResponse(String prompt) async {
     // Replace 'YOUR_API_KEY' with your actual OpenAI API key
-    final apiKey = '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';
+    final apiKey = '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';
     final endpoint =
-        'https://api.openai.com/v1/engines/davinci-codex/completions';
+        'https://api.openai.com/v1/completions';
 
     final headers = {
       'Content-Type': 'application/json',
@@ -40,7 +42,10 @@ class _ChatPageState extends State<ChatPage> {
 
     final data = {
       'prompt': prompt,
-      'max_tokens': 100,
+      'max_tokens': 250,
+      'model':'text-davinci-003',
+      'top_p': 1,
+      'temperature':0,
     };
 
     final response = await http.post(
@@ -79,7 +84,7 @@ class _ChatPageState extends State<ChatPage> {
             return AlertDialog(
               title: const Text('Error'),
               content:
-                  const Text('Failed to get a response. Please try again.'),
+              const Text('Failed to get a response. Please try again.'),
               actions: [
                 TextButton(
                   onPressed: () {
