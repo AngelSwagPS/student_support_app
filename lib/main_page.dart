@@ -69,14 +69,8 @@ class _MainPageState extends State<MainPage> {
 
       if (data.containsKey("days")) {
         final Map<String, dynamic> daysData = data["days"];
-
-        // Print the entire daysData map to the console
-
         mondayClasses = daysData['monday'];
         print(' Monday classes: $mondayClasses');
-
-        // Print the number of items in the daysData map
-        print('Number of items: ${daysData.length}');
       } else {
         print("No 'days' key found in JSON data.");
       }
@@ -244,72 +238,88 @@ class _MainPageState extends State<MainPage> {
                 height: 40,
               ),
               //NEXT CLASS DISPLAYED HERE
-              Container(
-                child: SizedBox(
-                  height: 250,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: mondayClasses.length,
-                      itemBuilder: ((context, index) {
-                        final dynamic classData = mondayClasses[index];
-                        print('This is the class data: $classData');
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Container(
-                            height: 245,
-                            width: 345,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(
-                                colors: [Colors.red, Colors.orange],
-                              ),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 160, left: 13),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    mondayClasses[index]['courseCode'],
-                                    style: TextStyle(
-                                        decoration: TextDecoration.none,
-                                        fontFamily: 'Martian',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: color.AppColor.fontColor),
+              FutureBuilder(
+                future: readJson(),
+                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // While data is being fetched, show a loading indicator or placeholder
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // If there's an error, show an error message
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // If data is fetched successfully, build the UI with the data
+                    return Container(
+                      child: SizedBox(
+                        height: 250,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: mondayClasses.length,
+                            itemBuilder: ((context, index) {
+                              final dynamic classData = mondayClasses[index];
+                              print('This is the class data: $classData');
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: Container(
+                                  height: 245,
+                                  width: 345,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: LinearGradient(
+                                      colors: [Colors.red, Colors.orange],
+                                    ),
                                   ),
-                                  SizedBox(
-                                    height: 3,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 160, left: 13),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          mondayClasses[index]['courseCode'],
+                                          style: TextStyle(
+                                              decoration: TextDecoration.none,
+                                              fontFamily: 'Martian',
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                              color: color.AppColor.fontColor),
+                                        ),
+                                        SizedBox(
+                                          height: 3,
+                                        ),
+                                        Text(
+                                          mondayClasses[index]['venue'],
+                                          style: TextStyle(
+                                              decoration: TextDecoration.none,
+                                              fontFamily: 'Martian',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: color.AppColor.fontColor),
+                                        ),
+                                        SizedBox(
+                                          height: 3,
+                                        ),
+                                        Text(
+                                          mondayClasses[index]['time'],
+                                          style: TextStyle(
+                                              decoration: TextDecoration.none,
+                                              fontFamily: 'Martian',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w400,
+                                              color: color.AppColor.fontColor),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    mondayClasses[index]['venue'],
-                                    style: TextStyle(
-                                        decoration: TextDecoration.none,
-                                        fontFamily: 'Martian',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: color.AppColor.fontColor),
-                                  ),
-                                  SizedBox(
-                                    height: 3,
-                                  ),
-                                  Text(
-                                    mondayClasses[index]['time'],
-                                    style: TextStyle(
-                                        decoration: TextDecoration.none,
-                                        fontFamily: 'Martian',
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: color.AppColor.fontColor),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      })),
-                ),
+                                ),
+                              );
+                            })),
+                      ),
+                    );
+                  }
+                },
               ),
               SizedBox(
                 height: 30,
