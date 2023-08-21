@@ -9,15 +9,16 @@ class ArticleCard extends StatelessWidget {
   final String imageUrl;
   final String date;
   final int reads;
+  final String news;
 
-  const ArticleCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.imageUrl,
-    required this.date,
-    required this.reads,
-  });
+  const ArticleCard(
+      {super.key,
+      required this.title,
+      required this.subtitle,
+      required this.imageUrl,
+      required this.date,
+      required this.reads,
+      required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class ArticleCard extends StatelessWidget {
             builder: (context) => ArticleDetailsPage(
               title: title,
               imageUrl: imageUrl,
+              news: news,
             ),
           ),
         );
@@ -136,9 +138,13 @@ class ArticleCard extends StatelessWidget {
 class ArticleDetailsPage extends StatelessWidget {
   final String title;
   final String imageUrl;
+  final String news;
 
   const ArticleDetailsPage(
-      {super.key, required this.title, required this.imageUrl});
+      {super.key,
+      required this.title,
+      required this.imageUrl,
+      required this.news});
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +197,7 @@ class ArticleDetailsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 30),
                   Text(
-                    'The Kwame Nkrumah University of Science and Technology is set to reopen school on the 7th of the coming month',
+                    news,
                     style: TextStyle(
                         color: color.AppColor.fontColor,
                         fontSize: 16,

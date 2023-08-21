@@ -123,6 +123,10 @@ class _MainPageState extends State<MainPage> {
                 fontSize: 18),
           ),
           content: TextField(
+            style: TextStyle(
+                color: color.AppColor.fontColor,
+                fontFamily: 'SFProRegular',
+                fontSize: 15),
             onChanged: (value) {
               newMessage = value;
             },
@@ -195,7 +199,7 @@ class _MainPageState extends State<MainPage> {
                             decoration: TextDecoration.none,
                             fontFamily: 'SFProLight',
                             fontWeight: FontWeight.w300,
-                            fontSize: 19,
+                            fontSize: 18,
                             color: color.AppColor.fontColor),
                       ),
                       Row(
@@ -205,7 +209,7 @@ class _MainPageState extends State<MainPage> {
                             style: TextStyle(
                                 decoration: TextDecoration.none,
                                 fontFamily: 'SFProRegular',
-                                fontSize: 25,
+                                fontSize: 22,
                                 fontWeight: FontWeight.w500,
                                 color: color.AppColor.fontColor),
                           ),
@@ -250,10 +254,10 @@ class _MainPageState extends State<MainPage> {
                         final dynamic classData = mondayClasses[index];
                         print('This is the class data: $classData');
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Container(
                             height: 245,
-                            width: 400,
+                            width: 345,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               gradient: LinearGradient(
@@ -262,7 +266,7 @@ class _MainPageState extends State<MainPage> {
                             ),
                             child: Padding(
                               padding:
-                                  const EdgeInsets.only(top: 160, left: 15),
+                                  const EdgeInsets.only(top: 160, left: 13),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -271,7 +275,7 @@ class _MainPageState extends State<MainPage> {
                                     style: TextStyle(
                                         decoration: TextDecoration.none,
                                         fontFamily: 'Martian',
-                                        fontSize: 16,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w600,
                                         color: color.AppColor.fontColor),
                                   ),
@@ -283,7 +287,7 @@ class _MainPageState extends State<MainPage> {
                                     style: TextStyle(
                                         decoration: TextDecoration.none,
                                         fontFamily: 'Martian',
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: color.AppColor.fontColor),
                                   ),
@@ -295,7 +299,7 @@ class _MainPageState extends State<MainPage> {
                                     style: TextStyle(
                                         decoration: TextDecoration.none,
                                         fontFamily: 'Martian',
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w400,
                                         color: color.AppColor.fontColor),
                                   )
@@ -324,7 +328,7 @@ class _MainPageState extends State<MainPage> {
                               decoration: TextDecoration.none,
                               fontFamily: 'SFProRegular',
                               fontWeight: FontWeight.w500,
-                              fontSize: 24,
+                              fontSize: 22,
                               color: color.AppColor.fontColor),
                         ),
                         Expanded(child: Container()),
