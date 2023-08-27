@@ -1,0 +1,34 @@
+{
+  "tips": {
+    "1": {
+      "title": "Stay Healthy",
+      "subtitle": "Your health is just as important as your hardwork",
+      "image_url": "assets/images/VegetablePic.jpg",
+      "tips": " Get sufficient sleep, eat balanced meals, and exercise regularly. A healthy body supports a healthy mind. Drinking water can help keep your brain functioning at its best."
+    },
+    "2": {
+      "title": "Group Studies",
+      "subtitle": "Education doesn't have to be a one man effort",
+      "image_url": "assets/images/GroupWorkPic.jpg",
+      "tips": "If you're struggling with a concept, don't hesitate to ask your teachers, peers, or online communities for help. Explaining concepts to someone else reinforces your understanding and helps you identify gaps in your knowledge."
+    },
+    "3": {
+      "title": "Practice Regularly",
+      "subtitle": "Energy and Persistence conquer all things",
+      "image_url": "assets/images/BooksPic.jpg",
+      "tips": "Regular practice is crucial. Work through problems and exercises to reinforce your understanding. Past papers or sample exams can provide insight into the exam format and types of questions. Consistency is key. Regular short study sessions are often more effective than cramming. Regular self-testing enhances memory retention and helps you gauge your progress."
+    },
+    "4": {
+      "title": "Have Confidence In Your Self",
+      "subtitle": "The program aims to increase diversity in STEM fields",
+      "image_url": "assets/images/ConfidencePic.jpg",
+      "tips": " Confidence in your abilities can have a positive impact on your performance. Practice relaxation techniques like deep breathing, meditation, or yoga to manage exam-related stress. Maintain a positive mindset. Visualize your success and remind yourself of your progress."
+    },
+    "5": {
+      "title": "Plan and Organize Yourself",
+      "subtitle": "Those who fail to plan has planned to fail",
+      "image_url": "assets/images/PlanPic.jpg",
+      "tips": " Create a study schedule that allocates time for each subject/topic. Break your study sessions into manageable chunks (e.g., 25-30 minutes) with short breaks in between. Focus on understanding concepts rather than memorizing. Use analogies, real-life examples, or teaching the material to someone else to enhance your understanding. Utilize textbooks, lecture notes, online resources, videos, and practice problems to get a well-rounded understanding."
+    }
+  }
+}

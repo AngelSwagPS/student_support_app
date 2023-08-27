@@ -11,21 +11,25 @@ import 'components/textfield.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+import '../constants/api_consts.dart';
 
 
 class LoginAlbum {
   final String username;
   final String token;
+  final String classCode;
 
   const LoginAlbum({
     required this.username,
     required this.token,
+    required this.classCode,
   });
 
   factory LoginAlbum.fromJson(Map<String, dynamic> field) {
     return LoginAlbum(
       username: field['username'],
       token: field['token'],
+      classCode: field['classCode'],
     );
   }
 
@@ -33,6 +37,7 @@ class LoginAlbum {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['username'] = username;
     data['token'] = token;
+    data['classCode'] = classCode;
     return data;
   }
 }
@@ -64,12 +69,13 @@ class _LoginPageState extends State<LoginPage> {
           (X509Certificate cert, String host, int port) => true;
       final http =  IOClient(ioc);
       final response = await http.post(
-        Uri.parse('https://192.168.210.45:7125/api/User/Login'),
+        Uri.parse('$SERVER_URL/User/Login'),
+        //'https://192.168.210.45:7125/api/User/Login'
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          "userEmail": "PS@yahoo", "password": "nope"
+          "userEmail": userEmail, "password": password
         }),
       );
 
@@ -81,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
         SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
         sharedPreferences.setString('token', loginAlbum.token);
         sharedPreferences.setString('username', loginAlbum.username);
+        sharedPreferences.setString('classCode',loginAlbum.classCode);
         print(loginAlbum.token);
       }
 
@@ -150,27 +157,27 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         loadingcontroller.text = "Loading...";
                       });
-                      signUserIn(context);
-                     // int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
-                      // setState(() {
-                      //   if (futureCode == 200) {
-                      //     //If User is Found
-                      //     setState(() {
-                      //       signUserIn(context);
-                      //       loadingcontroller.text = "";
-                      //     });
-                      //   }else if(futureCode==400){
-                      //     //If User is not found
-                      //     setState(() {
-                      //       loadingcontroller.text="Wrong Email or Password";
-                      //     });
-                      //   }else {
-                      //     //If there was a network problem
-                      //     setState(() {
-                      //       loadingcontroller.text="Could Not Connect to Server";
-                      //     });
-                      //   }
-                      // });
+                      //signUserIn(context);
+                     int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
+                      setState(() {
+                        if (futureCode == 200) {
+                          //If User is Found
+                          setState(() {
+                            signUserIn(context);
+                            loadingcontroller.text = "";
+                          });
+                        }else if(futureCode==400){
+                          //If User is not found
+                          setState(() {
+                            loadingcontroller.text="Wrong Email or Password";
+                          });
+                        }else {
+                          //If there was a network problem
+                          setState(() {
+                            loadingcontroller.text="Could Not Connect to Server";
+                          });
+                        }
+                      });
                     }
                 ),
                 TextField(
@@ -188,20 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 30,
                 ),
-                // MyButton(
-                //     onTap: () async {
-                //       SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                //       var taken= sharedPreferences.get('token');
-                //       print(taken);
-                //     }
-                // ),
-                // MyButton(
-                //     onTap: () async {
-                //       SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                //       sharedPreferences.remove('token');
-                //       print("Token Deleted");
-                //     }
-                // )
+
               ],
             ),
           ),

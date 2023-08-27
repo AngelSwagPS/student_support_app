@@ -1,6 +1,8 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
 
 import '../components/article_card.dart';
 
@@ -12,47 +14,64 @@ class NewsTab extends StatefulWidget {
 }
 
 class _NewsTabState extends State<NewsTab> {
+  late List<dynamic> newsList = [];
+
+  Future<void> readJson() async {
+    try {
+      final String response = await rootBundle.loadString('assets/news.json');
+      final Map<String, dynamic> data = json.decode(response);
+
+      if (data.containsKey("news")) {
+        final Map<String, dynamic> fetchedNewsList = data["news"];
+        setState(() {
+          newsList = fetchedNewsList.values.toList();
+        });
+      } else {
+        print("No 'news' key found in JSON data.");
+      }
+    } catch (e) {
+      print('Error reading JSON: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
           SizedBox(
-            height: 10,
+            height:1200,
+            child:
+              FutureBuilder(
+                  future: readJson(),
+                  builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                   return Expanded(
+                       child:
+                         ListView.builder(
+                           physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          itemCount: newsList.length,
+                          itemBuilder: (context, index) {
+                            final dynamic news = newsList[index];
+                            print(news);
+                            return ArticleCard(
+                            title: news['title'],
+                            subtitle: news['subtitle'],
+                            imageUrl: news['image_url'],
+                            date: news['date_published'],
+                            reads: news['number_of_reads'],
+                            news: news['content'],
+                          );
+                      },
+                    ));
+                },
+              ),
           ),
-          //FIRST ARTICLE
-          ArticleCard(
-              title: "Unfortunate news hits KNUST campus",
-              subtitle:
-                  "Apologies for the confusion. Here's the updated code for the ArticleCard and ArticleDetailsPage classes, incorporating the changes to display all the passed information:",
-              imageUrl:
-                  "https://images.pexels.com/photos/6146978/pexels-photo-6146978.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              date: "June 10, 2023",
-              reads: 235),
-          SizedBox(
-            height: 10,
-          ),
-          //SECOND ARTICLE
-          ArticleCard(
-              title: "Unfortunate news hits KNUST campus",
-              subtitle:
-                  "Apologies for the confusion. Here's the updated code for the ArticleCard and ArticleDetailsPage classes, incorporating the changes to display all the passed information:",
-              imageUrl:
-                  "https://images.pexels.com/photos/6146978/pexels-photo-6146978.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              date: "June 10, 2023",
-              reads: 235),
-          SizedBox(
-            height: 10,
-          ),
-          //THIRD ARTICLE
-          ArticleCard(
-              title: "Unfortunate news hits KNUST campus",
-              subtitle:
-                  "Apologies for the confusion. Here's the updated code for the ArticleCard and ArticleDetailsPage classes, incorporating the changes to display all the passed information:",
-              imageUrl:
-                  "https://images.pexels.com/photos/6146978/pexels-photo-6146978.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-              date: "June 10, 2023",
-              reads: 235),
         ],
       ),
     );

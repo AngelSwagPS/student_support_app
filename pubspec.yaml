@@ -70,10 +70,21 @@ flutter:
     - assets/images/profileImage.jpg
     - assets/images/morningart.jpg
     - assets/images/books.jpg
+    - assets/images/InfoSystemPic.png
+    - assets/images/ModernOperatingPic.jpeg
     - assets/images/chat_logo.png
     - assets/images/person.png
+    - assets/images/BooksPic.jpg
+    - assets/images/LibraryPic.jpg
+    - assets/images/GroupWorkPic.jpg
+    - assets/images/VegetablePic.jpg
+    - assets/images/ConfidencePic.jpg
+    - assets/images/PlanPic.jpg
+    - assets/images/ClassroomPic.jpg
     - assets/images/openai_logo.jpg
     - assets/courses.json
+    - assets/news.json
+    - assets/tips.json
 
   #   - images/a_dot_ham.jpeg
 

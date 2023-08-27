@@ -3,22 +3,19 @@
 import 'package:flutter/material.dart';
 import '../colors.dart' as color;
 
-class ArticleCard extends StatelessWidget {
+class TipsCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String imageUrl;
-  final String date;
-  final int reads;
-  final String news;
+  final String tips;
 
-  const ArticleCard(
+  const TipsCard(
       {super.key,
         required this.title,
         required this.subtitle,
         required this.imageUrl,
-        required this.date,
-        required this.reads,
-        required this.news});
+        required this.tips
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +25,16 @@ class ArticleCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ArticleDetailsPage(
+            builder: (context) => TipsDetailsPage(
               title: title,
               imageUrl: imageUrl,
-              news: news,
+              tips: tips,
             ),
           ),
         );
       },
       child: SizedBox(
-        height: 190, // Specify the desired height for the card
+        height: 170, // Specify the desired height for the card
         child: Card(
           color: color.AppColor.cardColor,
           elevation: 4,
@@ -53,7 +50,7 @@ class ArticleCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //Article title
+                      //Tips title
                       Text(
                         title,
                         style: TextStyle(
@@ -64,7 +61,7 @@ class ArticleCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 8),
-                      //Article subtitle
+                      //Tips subtitle
                       Text(
                         subtitle,
                         maxLines: 2,
@@ -74,37 +71,7 @@ class ArticleCard extends StatelessWidget {
                           color: color.AppColor.supportingText,
                           fontFamily: "Inter",
                         ),
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          //Date
-                          Text(
-                            date,
-                            style: TextStyle(
-                              color: color.AppColor.supportingText,
-                              fontSize: 13,
-                              fontFamily: "Inter",
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          //Number of people who have seen
-                          Icon(
-                            Icons.remove_red_eye,
-                            size: 16,
-                            color: color.AppColor.supportingText,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            reads.toString(),
-                            style: TextStyle(
-                              color: color.AppColor.supportingText,
-                              fontSize: 13,
-                              fontFamily: "Inter",
-                            ),
-                          ),
-                        ],
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -122,7 +89,7 @@ class ArticleCard extends StatelessWidget {
                       bottomRight: Radius.circular(10),
                     ),
                     image: DecorationImage(
-                      image: NetworkImage(imageUrl),
+                      image: AssetImage(imageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -137,16 +104,16 @@ class ArticleCard extends StatelessWidget {
 }
 
 //DETAILS PAGE
-class ArticleDetailsPage extends StatelessWidget {
+class TipsDetailsPage extends StatelessWidget {
   final String title;
   final String imageUrl;
-  final String news;
+  final String tips;
 
-  const ArticleDetailsPage(
+  const TipsDetailsPage(
       {super.key,
         required this.title,
         required this.imageUrl,
-        required this.news});
+        required this.tips});
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +139,7 @@ class ArticleDetailsPage extends StatelessWidget {
               height: 200,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(imageUrl),
+                  image: AssetImage(imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -193,13 +160,13 @@ class ArticleDetailsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 15),
                   Text(
-                    'Published: June 5, 2023',
+                    'Published: July 3, 2023',
                     style: TextStyle(
                         color: color.AppColor.supportingText, fontSize: 14),
                   ),
                   SizedBox(height: 30),
                   Text(
-                    news,
+                    tips,
                     style: TextStyle(
                         color: color.AppColor.fontColor,
                         fontSize: 16,

@@ -8,13 +8,27 @@ import 'components/mybutton.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
-
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+late Future<String?> studentName;
+
+  @override
+  void initState()  {
+    super.initState();
+
+    studentName = getStudentName();
+  }
+
+  Future<void> removeSavedData() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
+  }
+
   void signUserOut(BuildContext context) {
+     removeSavedData();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
@@ -67,57 +81,43 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(
               height: 15,
             ),
-            Text(
-              'KOFI ADJEI',
-              style: TextStyle(
-                fontFamily: 'SFProMedium',
-                fontSize: 30,
-                color: color.AppColor.fontColor,
-              ),
+            FutureBuilder<String?>(
+              future: studentName,
+              builder: ((context, snapshot){
+                if(snapshot.hasData){
+                  return Text(
+                    "${snapshot.data}",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontFamily: 'SFProLight',
+                        fontSize: 40,
+                        color: color.AppColor.fontColor),
+                  );
+                }else if(snapshot.hasError){
+                  //WHat happens when error
+                  return Text(
+                    "Hi There,",
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontFamily: 'SFProLight',
+                        fontSize: 20,
+                        color: color.AppColor.fontColor),
+                  );
+                }
+                //What happens while loading
+                return Text(
+                  "Hello",
+                  style: TextStyle(
+                      decoration: TextDecoration.none,
+                      fontFamily: 'SFProLight',
+                      fontSize: 30,
+                      color: color.AppColor.fontColor),
+                );
+              }),
+
             ),
             SizedBox(
               height: 100,
-            ),
-            GestureDetector(
-              onTap: () => {},
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 23, horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: color.AppColor.cardColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.language,
-                            color: Colors.blueAccent,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Language",
-                            style: TextStyle(
-                              fontFamily: 'SFProRegular',
-                              fontSize: 17,
-                              color: color.AppColor.fontColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
             ),
             SizedBox(
               height: 15,
@@ -156,13 +156,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: color.AppColor.fontColor,
                             ),
                           ),
-                          MyButton(
-                              onTap: () async {
-                                SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-                                sharedPreferences.remove('token');
-                                print("Token Deleted");
-                              }
-                          )
                         ],
                       ),
                     ),
@@ -175,4 +168,13 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+Future<String?> getStudentName() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  String? name =  sharedPreferences.getString('username');
+  print(name);
+  print("GOt Name");
+  return name;
+}
+
 }
