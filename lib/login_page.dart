@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          "userEmail": userEmail, "password": password
+          "userEmail": "PS@yahoo", "password": "nope"
         }),
       );
 
@@ -88,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
         sharedPreferences.setString('token', loginAlbum.token);
         sharedPreferences.setString('username', loginAlbum.username);
         sharedPreferences.setString('classCode',loginAlbum.classCode);
-        print(loginAlbum.token);
       }
 
       return response.statusCode;
@@ -105,7 +104,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: color.AppColor.homePageBackground,
-      // ignore: avoid_unnecessary_containers
       body: Container(
         child: SafeArea(
           child: Center(
