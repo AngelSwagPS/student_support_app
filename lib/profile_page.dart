@@ -6,6 +6,24 @@ import 'package:student_support_app/login_page.dart';
 import 'colors.dart' as color;
 import 'components/mybutton.dart';
 
+class StudentDetails{
+  final String? studentId;
+  final String? userName;
+  final String? userEmail;
+  final String? year;
+  final String? classCode;
+  final String? isAdmin;
+
+  const StudentDetails({
+    required this.studentId,
+    required this.userName,
+    required this.userEmail,
+    required this.year,
+    required this.classCode,
+    required this.isAdmin,
+  });
+}
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
   @override
@@ -14,12 +32,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 late Future<String?> studentName;
+late Future<StudentDetails?> student0Details;
 
   @override
   void initState()  {
     super.initState();
 
     studentName = getStudentName();
+    student0Details = getStudentDetails();
   }
 
   Future<void> removeSavedData() async {
@@ -81,17 +101,108 @@ late Future<String?> studentName;
             SizedBox(
               height: 15,
             ),
-            FutureBuilder<String?>(
-              future: studentName,
+            //UserName
+            FutureBuilder <StudentDetails?>(
+              future: student0Details,
               builder: ((context, snapshot){
                 if(snapshot.hasData){
-                  return Text(
-                    "${snapshot.data}",
-                    style: TextStyle(
-                        decoration: TextDecoration.none,
-                        fontFamily: 'SFProLight',
-                        fontSize: 40,
-                        color: color.AppColor.fontColor),
+                  StudentDetails? student0Details = snapshot.data;
+                  return SizedBox(
+                    height: 340,
+                    child: Card(
+                          margin: EdgeInsets.all(5.0),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                          color: color.AppColor.cardColor,
+                          child: ListView(
+                            scrollDirection: Axis.vertical,
+                            children: [
+                              ListTile(
+                                title: Text('Username',
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 17,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                                dense: true,
+                                visualDensity: VisualDensity(vertical: 2),
+                                subtitle: Text(student0Details!.userName.toString(),
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 14,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                              ),
+                              Divider(color: color.AppColor.supportingText),
+                              ListTile(
+                                title: Text('User-email',
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 17,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                                dense: true,
+                                visualDensity: VisualDensity(vertical: 2),
+                                subtitle: Text(student0Details.userEmail.toString(),
+                                    style: TextStyle(
+                                        decoration: TextDecoration.none,
+                                        fontSize: 14,
+                                        fontFamily: 'SFProLight',
+                                        color: color.AppColor.fontColor)),
+                              ),
+                              Divider(color: color.AppColor.supportingText),
+                              ListTile(
+                                title: Text('Year',
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 17,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                                dense: true,
+                                visualDensity: VisualDensity(vertical: 2),
+                                subtitle: Text(student0Details.year.toString(),
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 14,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                              ),
+                              Divider(color: color.AppColor.supportingText),
+                              ListTile(
+                                title: Text('Class code',
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 17,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                                dense: true,
+                                visualDensity: VisualDensity(vertical: 2),
+                                subtitle: Text(student0Details.classCode.toString(),
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 14,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                              ),
+                              Divider(color: color.AppColor.supportingText),
+                              ListTile(
+                                title: Text('StudentID',
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 17,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                                dense: true,
+                                visualDensity: VisualDensity(vertical: 2),
+                                subtitle: Text(student0Details.studentId.toString(),
+                                    style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    fontSize: 14,
+                                    fontFamily: 'SFProLight',
+                                    color: color.AppColor.fontColor)),
+                              ),
+                            ],
+                          ),
+                        ),
                   );
                 }else if(snapshot.hasError){
                   //WHat happens when error
@@ -117,10 +228,7 @@ late Future<String?> studentName;
 
             ),
             SizedBox(
-              height: 100,
-            ),
-            SizedBox(
-              height: 15,
+              height: 50,
             ),
             GestureDetector(
               onTap: () => signUserOut(context),
@@ -175,6 +283,27 @@ Future<String?> getStudentName() async {
   print(name);
   print("GOt Name");
   return name;
+}
+
+Future<StudentDetails?> getStudentDetails() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  String? user0Name =  sharedPreferences.getString('username');
+  String? user0Email =  sharedPreferences.getString('userEmail');
+  String? year0 =  sharedPreferences.getString('year');
+  String? class0Code =  sharedPreferences.getString('classCode');
+  String? is0Admin =  sharedPreferences.getString('isAdmin');
+  String? student0Id =  sharedPreferences.getString('studentId');
+
+  StudentDetails student = StudentDetails(
+      studentId: student0Id,
+      userName: user0Name,
+      year: year0,
+      classCode: class0Code,
+      isAdmin: is0Admin,
+      userEmail: user0Email
+  );
+
+  return student;
 }
 
 }

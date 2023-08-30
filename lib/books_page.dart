@@ -1,9 +1,15 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:http/io_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'colors.dart' as color;
 import 'package:url_launcher/url_launcher.dart';
+
+import 'constants/api_consts.dart';
 
 
 class Book {
@@ -16,6 +22,15 @@ class Book {
     required this.Html,
     required this.Image,
   });
+
+  factory Book.fromJson(Map<String, dynamic> field) {
+    return Book(
+      Code: field['code'],
+      Html: field['html'],
+      Image: field['image'],
+    );
+
+  }
 }
 
 class BooksPage extends StatefulWidget {
@@ -84,23 +99,23 @@ class _BooksPageState extends State<BooksPage> {
                                  GestureDetector(
                                    onTap: () {
                                      // Define the link URL here
-                                     String? link = book?.Html;
+                                     String? link = book.Html;
                                      // Navigate to the link using the launch function from the url_launcher package
-                                     launch(link!);
+                                     launch(link);
                                    },
                                      child: Container(
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
-                                            image: AssetImage('assets/images/books.jpg'),
+                                            image: NetworkImage(book!.Image),
                                             fit: BoxFit.cover,
                                           ),
                                           borderRadius: BorderRadius.all(Radius.circular(25.0),),
                                         ),
                                           child: Center(
                                             //Code for the book
-                                              child: Text(book!.Code,
+                                              child: Text(book.Code,
                                                   style: TextStyle(
-                                                      color: Colors.black87,
+                                                      color: Colors.blueAccent,
                                                       fontSize: 30,
                                                       fontWeight: FontWeight.bold)
                                                           )
@@ -114,7 +129,7 @@ class _BooksPageState extends State<BooksPage> {
                       }else if(snapshot.hasError){
                         return Text(
                             'Error: ${snapshot.error}',
-                          style: TextStyle(color: Colors.white, fontSize: 25)
+                          style: TextStyle(color: Colors.white, fontSize: 15)
                         );
                       }
 
@@ -130,22 +145,39 @@ class _BooksPageState extends State<BooksPage> {
   }
 
 Future<List<Book>> getBooks() async {
-  var classCode = await getClassCode();
+  String? token = await getToken();
 
-  if (classCode == "CS4") {
-    return CS4;
-  } else {
-    return CS3;
+  final ioc =  HttpClient();
+  ioc.badCertificateCallback =
+      (X509Certificate cert, String host, int port) => true;
+  final http =  IOClient(ioc);
+  final response = await http.get(
+      Uri.parse('$SERVER_URL/User/Books?token=$token'));
+
+  if(response.statusCode == 200){
+    final data = jsonDecode(response.body);
+
+    final List<Book> list = [];
+
+    for(var i =0 ; i < data.length; i++){
+      final entry = data[i];
+      list.add(Book.fromJson(entry));
+    }
+    print("Got the stuff");
+    return list;
+  }else{
+    throw Exception("Http failed");
   }
 }
 
-Future<String?> getClassCode() async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  String? classCode =  sharedPreferences.getString('classCode');
-  print(classCode);
-  print("Past code");
-  return classCode;
-}
+  Future<String?> getToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token =  sharedPreferences.getString('token');
+    print(token);
+    print("Past");
+    return token;
+  }
+
 
 
 

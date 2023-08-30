@@ -8,7 +8,6 @@ class ArticleCard extends StatelessWidget {
   final String subtitle;
   final String imageUrl;
   final String date;
-  final int reads;
   final String news;
 
   const ArticleCard(
@@ -17,7 +16,6 @@ class ArticleCard extends StatelessWidget {
         required this.subtitle,
         required this.imageUrl,
         required this.date,
-        required this.reads,
         required this.news});
 
   @override
@@ -88,21 +86,6 @@ class ArticleCard extends StatelessWidget {
                             ),
                           ),
                           SizedBox(width: 8),
-                          //Number of people who have seen
-                          Icon(
-                            Icons.remove_red_eye,
-                            size: 16,
-                            color: color.AppColor.supportingText,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            reads.toString(),
-                            style: TextStyle(
-                              color: color.AppColor.supportingText,
-                              fontSize: 13,
-                              fontFamily: "Inter",
-                            ),
-                          ),
                         ],
                       ),
                     ],

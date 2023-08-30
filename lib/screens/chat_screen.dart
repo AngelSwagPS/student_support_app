@@ -51,9 +51,9 @@ class _ChatScreenState extends State<ChatScreen> {
         elevation: 2,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset(AssetsManager.openaiLogo),
+          child: Image.asset(AssetsManager.aiLogoPic),
         ),
-        title: const Text("ChatGPT"),
+        title: const Text("Chat Buddy"),
         actions: [
           IconButton(
             onPressed: () async {
@@ -141,6 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> sendMessageFCT(
       {required ModelsProvider modelsProvider,
         required ChatProvider chatProvider}) async {
+    //If User Sends
     if (_isTyping) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -152,6 +153,7 @@ class _ChatScreenState extends State<ChatScreen> {
       );
       return;
     }
+    //Check If the User Sent Empty Box
     if (textEditingController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

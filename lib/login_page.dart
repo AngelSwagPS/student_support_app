@@ -16,20 +16,32 @@ import '../constants/api_consts.dart';
 
 class LoginAlbum {
   final String username;
+  final String studentId;
+  final String userEmail;
   final String token;
+  final String year;
   final String classCode;
+  final String isAdmin;
 
   const LoginAlbum({
     required this.username,
     required this.token,
+    required this.userEmail,
+    required this.studentId,
+    required this.year,
     required this.classCode,
+    required this.isAdmin,
   });
 
   factory LoginAlbum.fromJson(Map<String, dynamic> field) {
     return LoginAlbum(
       username: field['username'],
+        userEmail: field['userEmail'],
+        studentId: field['studentId'],
       token: field['token'],
+      year: field['year'],
       classCode: field['classCode'],
+      isAdmin: field['isAdmin']
     );
   }
 
@@ -38,6 +50,7 @@ class LoginAlbum {
     data['username'] = username;
     data['token'] = token;
     data['classCode'] = classCode;
+    data['isAdmin'] = isAdmin;
     return data;
   }
 }
@@ -64,6 +77,16 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<int> validateUser(String userEmail, String password,) async {
     try {
+      //validation
+      if(userEmail ==""){
+        return 616;
+      }else if (password == ""){
+        return 700;
+      }else{
+
+      }
+
+
       final ioc =  HttpClient();
       ioc.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
@@ -72,10 +95,11 @@ class _LoginPageState extends State<LoginPage> {
         Uri.parse('$SERVER_URL/User/Login'),
         //'https://192.168.210.45:7125/api/User/Login'
         headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+          'Content-Type': /*What*/ 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          "userEmail": "PS@yahoo", "password": "nope"
+          "userEmail": userEmail.trim(), "password": password.trim()
+          // "userEmail": "PS@yahoo", "password": "nope"
         }),
       );
 
@@ -88,6 +112,10 @@ class _LoginPageState extends State<LoginPage> {
         sharedPreferences.setString('token', loginAlbum.token);
         sharedPreferences.setString('username', loginAlbum.username);
         sharedPreferences.setString('classCode',loginAlbum.classCode);
+        sharedPreferences.setString('year',loginAlbum.year);
+        sharedPreferences.setString('isAdmin', loginAlbum.isAdmin);
+        sharedPreferences.setString('userEmail', loginAlbum.userEmail);
+        sharedPreferences.setString('studentId', loginAlbum.studentId);
       }
 
       return response.statusCode;
@@ -149,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 30,
                 ),
-                //SUBMIT BUTTON WITH PERFORMNING AUTH AND REDIRECTING TO HOMEPAGE
+                //SUBMIT BUTTON WITH PERFORMING AUTH AND REDIRECTING TO HOMEPAGE
                 MyButton(
                     onTap: () async  {
                       setState(() {
@@ -158,7 +186,15 @@ class _LoginPageState extends State<LoginPage> {
                       //signUserIn(context);
                      int futureCode = await validateUser(userEmailcontroller.text, passwordcontroller.text);
                       setState(() {
-                        if (futureCode == 200) {
+                        if(futureCode == 616){
+                          setState(() {
+                            loadingcontroller.text = "Please enter User Email";
+                          });
+                        }else if(futureCode == 700){
+                          setState(() {
+                            loadingcontroller.text = "Please enter Password";
+                          });
+                        } else if (futureCode == 200) {
                           //If User is Found
                           setState(() {
                             signUserIn(context);

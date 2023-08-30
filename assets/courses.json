@@ -1,21 +1,21 @@
 {
     "days": {
-      "monday": [
+      "Monday": [
         {
-          "courseCode": "CS50 - Introduction to ML ",
-          "venue": "LT-15",
+          "courseCode": "CSM483 - Operating System ",
+          "venue": "FF1",
           "time": "9:30 AM",
           "gradient":"[Color(0xFFFF0000), Color(0xFFFFA500)]"
 
         },
         {
-          "courseCode": "ENG101 - Communication Skills",
-          "venue": "Rm-101",
+          "courseCode": "CSM481 - Info System",
+          "venue": "SF19",
           "time": "11:00 AM",
           "gradient":"[Color(0xFF73C8A9), Color(0xFF373B44)]"
         }
       ],
-      "tuesday": [
+      "Tuesday": [
         {
           "courseCode": "MATH202",
           "venue": "Rm-203",
@@ -27,19 +27,19 @@
           "time": "1:30 PM"
         }
       ],
-      "wednesday": [
+      "Wednesday": [
         {
-          "courseCode": "BIO105",
-          "venue": "Rm-302",
+          "courseCode": "CSM105-Research Methods",
+          "venue": "SF32",
           "time": "8:45 AM"
         },
         {
-          "courseCode": "HIS201",
-          "venue": "Rm-105",
+          "courseCode": "ENG201",
+          "venue": "SF15",
           "time": "11:30 AM"
         }
       ],
-      "thursday": [
+      "Thursday": [
         {
           "courseCode": "CHEM401",
           "venue": "LT-7",
@@ -51,15 +51,15 @@
           "time": "2:00 PM"
         }
       ],
-      "friday": [
+      "Friday": [
         {
-          "courseCode": "CS150",
-          "venue": "LT-20",
+          "courseCode": "CSM150",
+          "venue": "B23",
           "time": "10:45 AM"
         },
         {
-          "courseCode": "ART102",
-          "venue": "Rm-401",
+          "courseCode": "MAS102",
+          "venue": "TF1",
           "time": "12:15 PM"
         }
       ]
